@@ -7,11 +7,25 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartTotalElement = document.getElementById('cart-total');
     const checkoutBtn = document.getElementById('checkout-btn');
     const emptyCartMessage = document.getElementById('empty-cart-message');
+    // Nuevo: Elemento del input de dirección
+    const deliveryAddressInput = document.getElementById('delivery-address-input');
 
     // --- Funciones del Carrito ---
 
     // Cargar carrito desde localStorage
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
+
+    // Función para guardar la dirección en localStorage
+    function saveAddress(address) {
+        localStorage.setItem('deliveryAddress', address);
+    }
+
+    // Función para cargar la dirección desde localStorage
+    function loadAddress() {
+        if (deliveryAddressInput) { // Solo si el input existe en la página actual (ej: index.html)
+            deliveryAddressInput.value = localStorage.getItem('deliveryAddress') || '';
+        }
+    }
 
     function saveCart() {
         localStorage.setItem('cart', JSON.stringify(cart));
@@ -97,6 +111,13 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners ---
 
+    // Evento para guardar la dirección al escribir (solo en index.html)
+    if (deliveryAddressInput) {
+        deliveryAddressInput.addEventListener('input', (e) => {
+            saveAddress(e.target.value);
+        });
+    }
+
     // Evento para añadir productos al carrito (en páginas de menú de categoría)
     if (productsContainer) {
         productsContainer.addEventListener('click', (e) => {
@@ -131,7 +152,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Evento para el botón de "Hacer Pedido por WhatsApp"
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', () => {
+            // Obtener la dirección guardada
+            const customerAddress = localStorage.getItem('deliveryAddress') || "No se especificó dirección.";
+            const phoneNumber = "56912345678"; // ¡IMPORTANTE: Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)!
+
+            if (cart.length === 0) {
+                alert("Tu carrito está vacío. Por favor, agrega productos antes de hacer un pedido.");
+                return; // Detener la ejecución si el carrito está vacío
+            }
+
             let whatsappMessage = "¡Hola! Quisiera hacer el siguiente pedido:\n\n";
+
+            // Incluir la dirección al inicio del mensaje
+            whatsappMessage += `📍 *Dirección de Envío:* ${customerAddress}\n\n`;
+
             let orderTotal = 0;
             const shippingCost = 2500; // Costo de envío para el mensaje de WhatsApp
 
@@ -141,19 +175,14 @@ document.addEventListener('DOMContentLoaded', () => {
                 orderTotal += itemTotal;
             });
 
-            if (cart.length > 0) {
-                 whatsappMessage += `\nSubtotal: $${orderTotal.toLocaleString('es-CL')}\n`;
-                 whatsappMessage += `Costo de Envío: $${shippingCost.toLocaleString('es-CL')}\n`;
-                 whatsappMessage += `Total Final: $${(orderTotal + shippingCost).toLocaleString('es-CL')}\n\n`;
-                 whatsappMessage += "¡Muchas gracias!";
-            } else {
-                whatsappMessage = "Mi carrito está vacío, no hay pedido que realizar.";
-            }
-
+            whatsappMessage += `\n--- Resumen del Pedido ---\n`;
+            whatsappMessage += `Subtotal: $${orderTotal.toLocaleString('es-CL')}\n`;
+            whatsappMessage += `Costo de Envío: $${shippingCost.toLocaleString('es-CL')}\n`;
+            whatsappMessage += `*Total Final: $${(orderTotal + shippingCost).toLocaleString('es-CL')}*\n\n`;
+            whatsappMessage += "¡Muchas gracias!";
 
             // Codificar el mensaje para URL
             const encodedMessage = encodeURIComponent(whatsappMessage);
-            const phoneNumber = "56929337063"; // Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)
 
             window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
         });
@@ -175,7 +204,8 @@ document.addEventListener('DOMContentLoaded', () => {
         setInterval(showNextImage, 4000); // Cambia de imagen cada 4 segundos
     }
 
-    // Inicializar: actualizar el contador del carrito y renderizar el carrito si es la página de carrito
+    // Inicializar: actualizar el contador del carrito, renderizar el carrito y cargar la dirección
     updateCartCount();
     renderCart(); // Se ejecutará solo si document.getElementById('cart-items') existe
+    loadAddress(); // Cargar la dirección al iniciar la página (si el input existe)
 });
