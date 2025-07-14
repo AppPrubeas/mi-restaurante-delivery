@@ -1,0 +1,57 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Rolls - Nombre de tu Restaurante</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Tu Logo</div>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="menu.html">Menú</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+                <li><a href="carrito.html">Carrito (<span id="cart-count">0</span>)</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="menu-category-page">
+        <h1>Nuestros Rolls</h1>
+        <div class="product-list">
+            <div class="product-card" data-id="roll-acevichado" data-name="Roll Acevichado" data-price="7990">
+                <img src="images/sushi-roll-acevichado.jpg" alt="Roll Acevichado">
+                <h3>Roll Acevichado</h3>
+                <p>Roll relleno de camarón tempura, queso crema y palta, cubierto con una salsa acevichada.</p>
+                <p class="price">$7.990</p>
+                <button class="btn add-to-cart">Agregar al Carrito</button>
+            </div>
+
+            <div class="product-card" data-id="roll-teriyaki" data-name="Roll Teriyaki" data-price="6990">
+                <img src="images/sushi-roll-teriyaki.jpg" alt="Roll Teriyaki">
+                <h3>Roll Teriyaki</h3>
+                <p>Roll con pollo teriyaki, queso crema y cebollín.</p>
+                <p class="price">$6.990</p>
+                <button class="btn add-to-cart">Agregar al Carrito</button>
+            </div>
+
+            <div class="product-card" data-id="roll-ebi-cheese" data-name="Roll Ebi Cheese" data-price="7500">
+                <img src="images/sushi-roll-ebi-cheese.jpg" alt="Roll Ebi Cheese">
+                <h3>Roll Ebi Cheese</h3>
+                <p>Camarón, queso crema y palta, envuelto en nori y arroz.</p>
+                <p class="price">$7.500</p>
+                <button class="btn add-to-cart">Agregar al Carrito</button>
+            </div>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Nombre de tu Restaurante. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
