@@ -153,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
 
             // Codificar el mensaje para URL
             const encodedMessage = encodeURIComponent(whatsappMessage);
-            const phoneNumber = "56912345678"; // Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)
+            const phoneNumber = "56929337063"; // Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)
 
             window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
         });
