@@ -154,7 +154,7 @@ document.addEventListener('DOMContentLoaded', () => {
         checkoutBtn.addEventListener('click', () => {
             // Obtener la dirección guardada
             const customerAddress = localStorage.getItem('deliveryAddress') || "No se especificó dirección.";
-            const phoneNumber = "56912345678"; // ¡IMPORTANTE: Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)!
+            const phoneNumber = "56929337063"; // ¡IMPORTANTE: Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)!
 
             if (cart.length === 0) {
                 alert("Tu carrito está vacío. Por favor, agrega productos antes de hacer un pedido.");
