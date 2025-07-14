@@ -1,0 +1,41 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Carrito - Nombre de tu Restaurante</title>
+    <link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+    <header>
+        <nav>
+            <div class="logo">Tu Logo</div>
+            <ul>
+                <li><a href="index.html">Inicio</a></li>
+                <li><a href="menu.html">Menú</a></li>
+                <li><a href="contacto.html">Contacto</a></li>
+                <li><a href="carrito.html">Carrito (<span id="cart-count">0</span>)</a></li>
+            </ul>
+        </nav>
+    </header>
+
+    <main class="cart-page">
+        <h1>Tu Carrito de Compras</h1>
+        <div id="cart-items">
+            <p id="empty-cart-message">Tu carrito está vacío.</p>
+        </div>
+        <div class="cart-summary">
+            <p>Subtotal: <span id="cart-subtotal">$0</span></p>
+            <p class="shipping-info">Costo de Envío: <span id="cart-shipping">$0</span></p>
+            <p class="total">Total: <span id="cart-total">$0</span></p>
+            <button id="checkout-btn" class="btn" style="display: none;">Hacer Pedido por WhatsApp</button>
+        </div>
+    </main>
+
+    <footer>
+        <p>&copy; 2025 Nombre de tu Restaurante. Todos los derechos reservados.</p>
+    </footer>
+
+    <script src="js/main.js"></script>
+</body>
+</html>
