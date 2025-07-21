@@ -257,6 +257,31 @@ p {
     margin-top: -5px;
 }
 
+/* Ajuste específico para el select de comuna */
+.address-input-group select {
+    width: 100%;
+    padding: 12px 15px;
+    border: 1px solid var(--light-grey);
+    border-radius: 5px;
+    font-size: 1rem;
+    margin-bottom: 20px; /* Más espacio entre el select y el input de calle */
+    background-color: var(--white);
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    appearance: none;
+    background-image: url('data:image/svg+xml;charset=US-ASCII,%3Csvg%20xmlns%3D%22http%3A%2F%2Fwww.w3.org%2F2000%2Fsvg%22%20width%3D%22292.4%22%20height%3D%22292.4%22%3E%3Cpath%20fill%3D%22%23000%22%20d%3D%22M287%2069.7c-4-4.1-9.9-6.3-15.9-6.3h-255.2c-6%200-11.9%202.2-15.9%206.3-4.1%204.1-6.3%209.9-6.3%2015.9s2.2%2011.9%206.3%2015.9l127.6%20127.6c4.1%204.1%209.9%206.3%2015.9%206.3s11.9-2.2%2015.9-6.3l127.6-127.6c4-4.1%206.2-9.9%206.2-15.9s-2.2-11.9-6.2-15.9z%22%2F%3E%3C%2Fsvg%3E');
+    background-repeat: no-repeat;
+    background-position: right 10px top 50%;
+    background-size: 12px auto;
+    cursor: pointer;
+}
+
+.address-input-group select:focus {
+    outline: none;
+    border-color: var(--primary-color);
+    box-shadow: 0 0 0 3px rgba(255,111,97,0.2);
+}
+
 
 /* Menu Page (Categories) */
 .menu-page .menu-categories {
@@ -488,7 +513,7 @@ p {
     padding: 12px 25px;
 }
 
-/* Estilos para el nuevo apartado de Método de Pago en el carrito (NUEVO/CORREGIDO) */
+/* Estilos para el nuevo apartado de Método de Pago en el carrito */
 .payment-method-selection {
     margin-top: 25px;
     margin-bottom: 25px;
