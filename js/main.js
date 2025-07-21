@@ -16,7 +16,7 @@ document.addEventListener('DOMContentLoaded', () => {
     const paymentMethodSelect = document.getElementById('payment-method');
 
     // --- Variables de Estado ---
-    let cart = []; // El carrito siempre inicia vacío
+    let cart = []; // El carrito siempre inicia vacío, no se carga desde localStorage
     let selectedPaymentMethod = ''; // El método de pago siempre inicia sin seleccionar
     let selectedCommune = ''; // La comuna seleccionada
     let streetAddress = ''; // La dirección de la calle
@@ -195,7 +195,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const phoneNumber = "56912345678"; // ¡IMPORTANTE: Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)!
+            const phoneNumber = "56937248200"; // ¡IMPORTANTE: Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)!
             const finalPaymentMethod = selectedPaymentMethod;
             const finalShippingCost = calculateShippingCost(); // Obtener el costo de envío final
 
