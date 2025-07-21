@@ -173,7 +173,7 @@ document.addEventListener('DOMContentLoaded', () => {
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', () => {
             const customerAddress = localStorage.getItem('deliveryAddress') || "No se especificó dirección.";
-            const phoneNumber = "56912345678"; // ¡IMPORTANTE: Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)!
+            const phoneNumber = "56929337063"; // ¡IMPORTANTE: Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)!
             const finalPaymentMethod = selectedPaymentMethod || "No especificado"; // Obtener el método de pago actual
 
             if (cart.length === 0) {
