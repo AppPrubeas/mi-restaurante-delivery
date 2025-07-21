@@ -20,7 +20,7 @@ header {
     color: #fff;
     padding-top: 20px;
     min-height: 70px;
-    border-bottom: #77aaff 3px solid;
+    border-bottom: #77aaff 3px solid; /* Azul suave */
 }
 
 header a {
@@ -55,7 +55,7 @@ header nav {
 }
 
 header .highlight, header .current a {
-    color: #77aaff;
+    color: #77aaff; /* Azul claro para elementos resaltados/actuales */
     font-weight: bold;
 }
 
@@ -98,7 +98,7 @@ header a:hover {
 
 .btn {
     display: inline-block;
-    background: #77aaff;
+    background: #77aaff; /* Azul suave */
     color: #fff;
     padding: 10px 20px;
     text-decoration: none;
@@ -107,7 +107,7 @@ header a:hover {
 }
 
 .btn:hover {
-    background: #5588cc;
+    background: #5588cc; /* Azul más oscuro al pasar el mouse */
 }
 
 /* Carrusel de Imágenes */
@@ -228,7 +228,7 @@ main h1 {
     padding-top: 20px;
 }
 
-/* Navegación de Categorías (Submenús) */
+/* Navegación de Categorías (Submenús visuales) */
 .menu-categories-nav {
     background: #eee;
     padding: 20px;
@@ -274,20 +274,21 @@ main h1 {
     box-shadow: 0 4px 8px rgba(0,0,0,0.2);
 }
 
-/* Contenedor General de Secciones del Menú */
+/* Contenedor General de Secciones del Menú (donde el JS crea las categorías) */
 .all-menu-sections {
     display: flex;
     flex-direction: column;
     gap: 40px; /* Espacio entre cada sección de categoría */
 }
 
-/* Estilos para cada Sección de Categoría */
+/* Estilos para cada Sección de Categoría creada por JS */
 .menu-category-section {
     background: #fff;
     padding: 30px;
     border-radius: 8px;
     box-shadow: 0 2px 5px rgba(0,0,0,0.1);
-    scroll-margin-top: 80px; /* Para que el encabezado no oculte el título al hacer clic en el menú de categorías */
+    /* Importante para el desplazamiento de anclaje, evita que el header oculte el título */
+    scroll-margin-top: 80px; 
 }
 
 .menu-category-section h2 {
@@ -406,12 +407,21 @@ main h1 {
 }
 
 .cart-item-controls button[data-action="remove"] {
-    background: #e74c3c;
+    background: #e74c3c; /* Rojo para remover */
     color: #fff;
 }
 
 .cart-item-controls button[data-action="remove"]:hover {
     background: #c0392b;
+}
+
+.cart-item-controls span {
+    font-weight: bold;
+}
+
+.cart-item-price {
+    font-weight: bold;
+    color: #e67e22; /* Naranja para precios en carrito */
 }
 
 .cart-summary {
@@ -468,6 +478,28 @@ main h1 {
     margin-bottom: 20px;
     font-weight: bold;
     display: none; /* Oculto por defecto, JS lo muestra */
+}
+
+/* Campos de formulario en Carrito y Contacto */
+.form-group {
+    margin-bottom: 15px;
+}
+
+.form-group label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+    color: #555;
+}
+
+.form-group select,
+.form-group input[type="text"] {
+    width: 100%;
+    padding: 10px;
+    border: 1px solid #ddd;
+    border-radius: 5px;
+    font-size: 1em;
+    box-sizing: border-box; /* Asegura que padding y border no aumenten el ancho */
 }
 
 
@@ -528,7 +560,7 @@ footer {
     color: #fff;
     background-color: #333;
     text-align: center;
-    border-top: #77aaff 3px solid;
+    border-top: #77aaff 3px solid; /* Azul suave */
 }
 
 
@@ -612,4 +644,4 @@ footer {
         text-align: right;
         width: 100%;
     }
-    }
+        }
