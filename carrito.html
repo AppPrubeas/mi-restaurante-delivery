@@ -28,6 +28,17 @@
             <p>Subtotal: <span id="cart-subtotal">$0</span></p>
             <p class="shipping-info">Costo de Envío: <span id="cart-shipping">$0</span></p>
             <p class="total">Total: <span id="cart-total">$0</span></p>
+
+            <div class="payment-method-selection">
+                <h3>Método de Pago</h3>
+                <select id="payment-method">
+                    <option value="">Selecciona un método de pago</option>
+                    <option value="Tarjeta">Tarjeta (Crédito/Débito)</option>
+                    <option value="Transferencia">Transferencia Electrónica</option>
+                    <option value="Efectivo">Efectivo</option>
+                </select>
+            </div>
+
             <button id="checkout-btn" class="btn" style="display: none;">Hacer Pedido por WhatsApp</button>
         </div>
     </main>
