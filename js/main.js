@@ -7,31 +7,34 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartTotalElement = document.getElementById('cart-total');
     const checkoutBtn = document.getElementById('checkout-btn');
     const emptyCartMessage = document.getElementById('empty-cart-message');
-    const deliveryAddressInput = document.getElementById('delivery-address-input');
+
+    // Elementos de la dirección
+    const deliveryCommuneSelect = document.getElementById('delivery-commune-select');
+    const deliveryStreetAddressInput = document.getElementById('delivery-street-address');
+
+    // Elemento del select de método de pago
     const paymentMethodSelect = document.getElementById('payment-method');
 
-    // --- Funciones del Carrito ---
+    // --- Variables de Estado ---
+    let cart = []; // El carrito siempre inicia vacío
+    let selectedPaymentMethod = ''; // El método de pago siempre inicia sin seleccionar
+    let selectedCommune = ''; // La comuna seleccionada
+    let streetAddress = ''; // La dirección de la calle
 
-    // El carrito siempre inicia vacío, no se carga desde localStorage
-    let cart = [];
-    // El método de pago siempre inicia sin seleccionar
-    let selectedPaymentMethod = '';
+    // --- Costos de Envío por Comuna ---
+    // ¡IMPORTANTE! Personaliza estos valores y comunas según tu negocio.
+    const shippingCosts = {
+        'Quilpué': 2500, // Costo para Quilpué
+        'Villa Alemana': 3000, // Costo para Villa Alemana
+        'Limache': 4500,     // Costo para Limache
+        'Viña del Mar': 5000, // Costo para Viña del Mar (ejemplo si despachas lejos)
+        '': 0 // Si no hay comuna seleccionada, el costo es 0 (o puedes poner un mensaje de error)
+    };
 
-    // No necesitamos saveAddress ni loadAddress si no queremos persistencia
-    // Solo si el input existe en la página actual (ej: index.html), lo inicializamos
-    if (deliveryAddressInput) {
-        deliveryAddressInput.value = ''; // Asegura que el campo esté vacío al cargar la página
-    }
+    // --- Funciones del Carrito y UI ---
 
-    // No necesitamos savePaymentMethod ni loadPaymentMethod si no queremos persistencia
-    // Solo si el select existe en la página actual (ej: carrito.html), lo inicializamos
-    if (paymentMethodSelect) {
-        paymentMethodSelect.value = ''; // Asegura que la opción "Selecciona..." esté activa
-    }
-
-    // saveCart ya no guardará en localStorage, solo actualizará UI
     function saveCart() {
-        // Anteriormente: localStorage.setItem('cart', JSON.stringify(cart));
+        // No guarda en localStorage, solo actualiza la UI
         updateCartCount();
         renderCart();
     }
@@ -70,12 +73,16 @@ document.addEventListener('DOMContentLoaded', () => {
         saveCart();
     }
 
+    function calculateShippingCost() {
+        return shippingCosts[selectedCommune] || 0; // Retorna el costo de la comuna o 0 si no se encuentra
+    }
+
     function renderCart() {
         if (!cartItemsContainer) return;
 
         cartItemsContainer.innerHTML = '';
         let subtotal = 0;
-        const shippingCost = 2500;
+        const currentShippingCost = calculateShippingCost(); // Obtener el costo de envío dinámicamente
 
         if (cart.length === 0) {
             emptyCartMessage.style.display = 'block';
@@ -106,20 +113,26 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        const total = subtotal + (cart.length > 0 ? shippingCost : 0);
+        const total = subtotal + (cart.length > 0 ? currentShippingCost : 0);
         cartSubtotalElement.textContent = `$${subtotal.toLocaleString('es-CL')}`;
-        cartShippingElement.textContent = cart.length > 0 ? `$${shippingCost.toLocaleString('es-CL')}` : '$0';
+        cartShippingElement.textContent = cart.length > 0 ? `$${currentShippingCost.toLocaleString('es-CL')}` : '$0';
         cartTotalElement.textContent = `$${total.toLocaleString('es-CL')}`;
     }
 
     // --- Event Listeners ---
 
-    // Evento para obtener la dirección al escribir (solo en index.html)
-    // No guarda en localStorage, solo actualiza una variable temporal si es necesario para el envío
-    if (deliveryAddressInput) {
-        deliveryAddressInput.addEventListener('input', (e) => {
-            // Si la dirección no se guarda, necesitarías obtenerla justo antes de enviar el WhatsApp
-            // Por ahora, solo se obtiene en el momento de hacer el pedido.
+    // Evento para obtener la dirección de la calle
+    if (deliveryStreetAddressInput) {
+        deliveryStreetAddressInput.addEventListener('input', (e) => {
+            streetAddress = e.target.value;
+        });
+    }
+
+    // Evento para obtener la comuna seleccionada y actualizar el envío
+    if (deliveryCommuneSelect) {
+        deliveryCommuneSelect.addEventListener('change', (e) => {
+            selectedCommune = e.target.value;
+            renderCart(); // Vuelve a renderizar el carrito para actualizar el costo de envío
         });
     }
 
@@ -164,49 +177,63 @@ document.addEventListener('DOMContentLoaded', () => {
     // Evento para el botón de "Hacer Pedido por WhatsApp"
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', () => {
-            // Obtener la dirección directamente del input al momento del pedido
-            const customerAddress = deliveryAddressInput ? deliveryAddressInput.value : "No se especificó dirección.";
-            const phoneNumber = "56929337063"; // ¡IMPORTANTE: Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)!
-            const finalPaymentMethod = selectedPaymentMethod || "No especificado";
-
+            // Validaciones
             if (cart.length === 0) {
                 alert("Tu carrito está vacío. Por favor, agrega productos antes de hacer un pedido.");
                 return;
             }
-
-            if (finalPaymentMethod === "" || finalPaymentMethod === "No especificado") {
+            if (!selectedCommune) {
+                alert("Por favor, selecciona tu comuna.");
+                return;
+            }
+            if (!streetAddress.trim()) {
+                alert("Por favor, ingresa tu dirección completa (calle y número).");
+                return;
+            }
+            if (selectedPaymentMethod === "" || selectedPaymentMethod === "No especificado") {
                 alert("Por favor, selecciona un método de pago antes de hacer el pedido.");
                 return;
             }
 
+            const phoneNumber = "56912345678"; // ¡IMPORTANTE: Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)!
+            const finalPaymentMethod = selectedPaymentMethod;
+            const finalShippingCost = calculateShippingCost(); // Obtener el costo de envío final
+
             let whatsappMessage = "¡Hola! Quisiera hacer el siguiente pedido:\n\n";
 
-            whatsappMessage += `📍 *Dirección de Envío:* ${customerAddress}\n`;
+            whatsappMessage += `📍 *Dirección de Envío:*\n`;
+            whatsappMessage += `   - Comuna: ${selectedCommune}\n`;
+            whatsappMessage += `   - Calle y Número: ${streetAddress}\n`;
             whatsappMessage += `💳 *Método de Pago:* ${finalPaymentMethod}\n\n`;
 
-            let orderTotal = 0;
-            const shippingCost = 2500;
-
+            let orderSubtotal = 0;
             cart.forEach(item => {
                 const itemTotal = item.price * item.quantity;
                 whatsappMessage += `- ${item.name} x ${item.quantity} = $${itemTotal.toLocaleString('es-CL')}\n`;
-                orderTotal += itemTotal;
+                orderSubtotal += itemTotal;
             });
 
+            const orderTotal = orderSubtotal + finalShippingCost;
+
             whatsappMessage += `\n--- Resumen del Pedido ---\n`;
-            whatsappMessage += `Subtotal: $${orderTotal.toLocaleString('es-CL')}\n`;
-            whatsappMessage += `Costo de Envío: $${shippingCost.toLocaleString('es-CL')}\n`;
-            whatsappMessage += `*Total Final: $${(orderTotal + shippingCost).toLocaleString('es-CL')}*\n\n`;
+            whatsappMessage += `Subtotal: $${orderSubtotal.toLocaleString('es-CL')}\n`;
+            whatsappMessage += `Costo de Envío: $${finalShippingCost.toLocaleString('es-CL')}\n`;
+            whatsappMessage += `*Total Final: $${orderTotal.toLocaleString('es-CL')}*\n\n`;
             whatsappMessage += "¡Muchas gracias!";
 
             const encodedMessage = encodeURIComponent(whatsappMessage);
 
             window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
 
-            // Opcional: Limpiar el carrito después de enviar el pedido
-            // Si quieres que el carrito se reinicie DE INMEDIATO después de enviar el WhatsApp
+            // Opcional: Limpiar el carrito y los campos después de enviar el pedido
             // cart = [];
-            // saveCart(); // Esto actualizaría la UI y mostraría el carrito vacío
+            // selectedCommune = '';
+            // streetAddress = '';
+            // selectedPaymentMethod = '';
+            // if (deliveryCommuneSelect) deliveryCommuneSelect.value = '';
+            // if (deliveryStreetAddressInput) deliveryStreetAddressInput.value = '';
+            // if (paymentMethodSelect) paymentMethodSelect.value = '';
+            // saveCart(); // Actualiza la UI
         });
     }
 
@@ -227,7 +254,6 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Inicializar: actualizar el contador del carrito y renderizar el carrito
-    // No se carga nada desde localStorage al inicio.
     updateCartCount();
-    renderCart();
+    renderCart(); // Llamada inicial para mostrar el costo de envío $0 o predeterminado
 });
