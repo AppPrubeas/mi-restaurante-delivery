@@ -8,40 +8,30 @@ document.addEventListener('DOMContentLoaded', () => {
     const checkoutBtn = document.getElementById('checkout-btn');
     const emptyCartMessage = document.getElementById('empty-cart-message');
     const deliveryAddressInput = document.getElementById('delivery-address-input');
-    // Nuevo: Elemento del select de método de pago
     const paymentMethodSelect = document.getElementById('payment-method');
 
     // --- Funciones del Carrito ---
 
-    let cart = JSON.parse(localStorage.getItem('cart')) || [];
-    // Nuevo: Variable para guardar el método de pago seleccionado
-    let selectedPaymentMethod = localStorage.getItem('selectedPaymentMethod') || '';
+    // El carrito siempre inicia vacío, no se carga desde localStorage
+    let cart = [];
+    // El método de pago siempre inicia sin seleccionar
+    let selectedPaymentMethod = '';
 
-    function saveAddress(address) {
-        localStorage.setItem('deliveryAddress', address);
+    // No necesitamos saveAddress ni loadAddress si no queremos persistencia
+    // Solo si el input existe en la página actual (ej: index.html), lo inicializamos
+    if (deliveryAddressInput) {
+        deliveryAddressInput.value = ''; // Asegura que el campo esté vacío al cargar la página
     }
 
-    function loadAddress() {
-        if (deliveryAddressInput) {
-            deliveryAddressInput.value = localStorage.getItem('deliveryAddress') || '';
-        }
+    // No necesitamos savePaymentMethod ni loadPaymentMethod si no queremos persistencia
+    // Solo si el select existe en la página actual (ej: carrito.html), lo inicializamos
+    if (paymentMethodSelect) {
+        paymentMethodSelect.value = ''; // Asegura que la opción "Selecciona..." esté activa
     }
 
-    // Nuevo: Guardar método de pago en localStorage
-    function savePaymentMethod(method) {
-        localStorage.setItem('selectedPaymentMethod', method);
-        selectedPaymentMethod = method; // Actualizar la variable JS también
-    }
-
-    // Nuevo: Cargar método de pago al iniciar el carrito
-    function loadPaymentMethod() {
-        if (paymentMethodSelect) {
-            paymentMethodSelect.value = selectedPaymentMethod;
-        }
-    }
-
+    // saveCart ya no guardará en localStorage, solo actualizará UI
     function saveCart() {
-        localStorage.setItem('cart', JSON.stringify(cart));
+        // Anteriormente: localStorage.setItem('cart', JSON.stringify(cart));
         updateCartCount();
         renderCart();
     }
@@ -124,17 +114,19 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners ---
 
-    // Evento para guardar la dirección al escribir (solo en index.html)
+    // Evento para obtener la dirección al escribir (solo en index.html)
+    // No guarda en localStorage, solo actualiza una variable temporal si es necesario para el envío
     if (deliveryAddressInput) {
         deliveryAddressInput.addEventListener('input', (e) => {
-            saveAddress(e.target.value);
+            // Si la dirección no se guarda, necesitarías obtenerla justo antes de enviar el WhatsApp
+            // Por ahora, solo se obtiene en el momento de hacer el pedido.
         });
     }
 
-    // Nuevo: Evento para guardar el método de pago al seleccionar
+    // Evento para obtener el método de pago al seleccionar
     if (paymentMethodSelect) {
         paymentMethodSelect.addEventListener('change', (e) => {
-            savePaymentMethod(e.target.value);
+            selectedPaymentMethod = e.target.value; // Actualiza la variable global
         });
     }
 
@@ -172,16 +164,16 @@ document.addEventListener('DOMContentLoaded', () => {
     // Evento para el botón de "Hacer Pedido por WhatsApp"
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', () => {
-            const customerAddress = localStorage.getItem('deliveryAddress') || "No se especificó dirección.";
+            // Obtener la dirección directamente del input al momento del pedido
+            const customerAddress = deliveryAddressInput ? deliveryAddressInput.value : "No se especificó dirección.";
             const phoneNumber = "56929337063"; // ¡IMPORTANTE: Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)!
-            const finalPaymentMethod = selectedPaymentMethod || "No especificado"; // Obtener el método de pago actual
+            const finalPaymentMethod = selectedPaymentMethod || "No especificado";
 
             if (cart.length === 0) {
                 alert("Tu carrito está vacío. Por favor, agrega productos antes de hacer un pedido.");
                 return;
             }
 
-            // Validar si se seleccionó un método de pago
             if (finalPaymentMethod === "" || finalPaymentMethod === "No especificado") {
                 alert("Por favor, selecciona un método de pago antes de hacer el pedido.");
                 return;
@@ -189,8 +181,8 @@ document.addEventListener('DOMContentLoaded', () => {
 
             let whatsappMessage = "¡Hola! Quisiera hacer el siguiente pedido:\n\n";
 
-            whatsappMessage += `📍 *Dirección de Envío:* ${customerAddress}\n`; // Se agregó salto de línea aquí
-            whatsappMessage += `💳 *Método de Pago:* ${finalPaymentMethod}\n\n`; // Se agregó aquí el método de pago
+            whatsappMessage += `📍 *Dirección de Envío:* ${customerAddress}\n`;
+            whatsappMessage += `💳 *Método de Pago:* ${finalPaymentMethod}\n\n`;
 
             let orderTotal = 0;
             const shippingCost = 2500;
@@ -210,6 +202,11 @@ document.addEventListener('DOMContentLoaded', () => {
             const encodedMessage = encodeURIComponent(whatsappMessage);
 
             window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
+
+            // Opcional: Limpiar el carrito después de enviar el pedido
+            // Si quieres que el carrito se reinicie DE INMEDIATO después de enviar el WhatsApp
+            // cart = [];
+            // saveCart(); // Esto actualizaría la UI y mostraría el carrito vacío
         });
     }
 
@@ -229,9 +226,8 @@ document.addEventListener('DOMContentLoaded', () => {
         setInterval(showNextImage, 4000);
     }
 
-    // Inicializar: actualizar el contador del carrito, renderizar el carrito, cargar la dirección y el método de pago
+    // Inicializar: actualizar el contador del carrito y renderizar el carrito
+    // No se carga nada desde localStorage al inicio.
     updateCartCount();
     renderCart();
-    loadAddress();
-    loadPaymentMethod(); // Cargar el método de pago al iniciar la página del carrito
 });
