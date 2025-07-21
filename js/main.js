@@ -7,35 +7,48 @@ document.addEventListener('DOMContentLoaded', () => {
     const cartTotalElement = document.getElementById('cart-total');
     const checkoutBtn = document.getElementById('checkout-btn');
     const emptyCartMessage = document.getElementById('empty-cart-message');
-    // Nuevo: Elemento del input de dirección
     const deliveryAddressInput = document.getElementById('delivery-address-input');
+    // Nuevo: Elemento del select de método de pago
+    const paymentMethodSelect = document.getElementById('payment-method');
 
     // --- Funciones del Carrito ---
 
-    // Cargar carrito desde localStorage
     let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    // Nuevo: Variable para guardar el método de pago seleccionado
+    let selectedPaymentMethod = localStorage.getItem('selectedPaymentMethod') || '';
 
-    // Función para guardar la dirección en localStorage
     function saveAddress(address) {
         localStorage.setItem('deliveryAddress', address);
     }
 
-    // Función para cargar la dirección desde localStorage
     function loadAddress() {
-        if (deliveryAddressInput) { // Solo si el input existe en la página actual (ej: index.html)
+        if (deliveryAddressInput) {
             deliveryAddressInput.value = localStorage.getItem('deliveryAddress') || '';
+        }
+    }
+
+    // Nuevo: Guardar método de pago en localStorage
+    function savePaymentMethod(method) {
+        localStorage.setItem('selectedPaymentMethod', method);
+        selectedPaymentMethod = method; // Actualizar la variable JS también
+    }
+
+    // Nuevo: Cargar método de pago al iniciar el carrito
+    function loadPaymentMethod() {
+        if (paymentMethodSelect) {
+            paymentMethodSelect.value = selectedPaymentMethod;
         }
     }
 
     function saveCart() {
         localStorage.setItem('cart', JSON.stringify(cart));
         updateCartCount();
-        renderCart(); // Para asegurar que el carrito se actualice en todas las páginas si es necesario
+        renderCart();
     }
 
     function updateCartCount() {
         const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-        if (cartCountElement) { // Verificar si el elemento existe en la página actual
+        if (cartCountElement) {
             cartCountElement.textContent = totalItems;
         }
     }
@@ -68,11 +81,11 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     function renderCart() {
-        if (!cartItemsContainer) return; // Salir si no estamos en la página del carrito
+        if (!cartItemsContainer) return;
 
-        cartItemsContainer.innerHTML = ''; // Limpiar carrito antes de renderizar
+        cartItemsContainer.innerHTML = '';
         let subtotal = 0;
-        const shippingCost = 2500; // Define tu costo de envío aquí (en CLP)
+        const shippingCost = 2500;
 
         if (cart.length === 0) {
             emptyCartMessage.style.display = 'block';
@@ -103,7 +116,7 @@ document.addEventListener('DOMContentLoaded', () => {
             });
         }
 
-        const total = subtotal + (cart.length > 0 ? shippingCost : 0); // Sumar envío solo si hay productos
+        const total = subtotal + (cart.length > 0 ? shippingCost : 0);
         cartSubtotalElement.textContent = `$${subtotal.toLocaleString('es-CL')}`;
         cartShippingElement.textContent = cart.length > 0 ? `$${shippingCost.toLocaleString('es-CL')}` : '$0';
         cartTotalElement.textContent = `$${total.toLocaleString('es-CL')}`;
@@ -118,7 +131,14 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Evento para añadir productos al carrito (en páginas de menú de categoría)
+    // Nuevo: Evento para guardar el método de pago al seleccionar
+    if (paymentMethodSelect) {
+        paymentMethodSelect.addEventListener('change', (e) => {
+            savePaymentMethod(e.target.value);
+        });
+    }
+
+    // Evento para añadir productos al carrito
     if (productsContainer) {
         productsContainer.addEventListener('click', (e) => {
             if (e.target.classList.contains('add-to-cart')) {
@@ -133,7 +153,7 @@ document.addEventListener('DOMContentLoaded', () => {
         });
     }
 
-    // Eventos para el carrito (en la página del carrito)
+    // Eventos para el carrito
     if (cartItemsContainer) {
         cartItemsContainer.addEventListener('click', (e) => {
             const productId = e.target.dataset.id;
@@ -152,22 +172,28 @@ document.addEventListener('DOMContentLoaded', () => {
     // Evento para el botón de "Hacer Pedido por WhatsApp"
     if (checkoutBtn) {
         checkoutBtn.addEventListener('click', () => {
-            // Obtener la dirección guardada
             const customerAddress = localStorage.getItem('deliveryAddress') || "No se especificó dirección.";
-            const phoneNumber = "56929337063"; // ¡IMPORTANTE: Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)!
+            const phoneNumber = "56912345678"; // ¡IMPORTANTE: Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)!
+            const finalPaymentMethod = selectedPaymentMethod || "No especificado"; // Obtener el método de pago actual
 
             if (cart.length === 0) {
                 alert("Tu carrito está vacío. Por favor, agrega productos antes de hacer un pedido.");
-                return; // Detener la ejecución si el carrito está vacío
+                return;
+            }
+
+            // Validar si se seleccionó un método de pago
+            if (finalPaymentMethod === "" || finalPaymentMethod === "No especificado") {
+                alert("Por favor, selecciona un método de pago antes de hacer el pedido.");
+                return;
             }
 
             let whatsappMessage = "¡Hola! Quisiera hacer el siguiente pedido:\n\n";
 
-            // Incluir la dirección al inicio del mensaje
-            whatsappMessage += `📍 *Dirección de Envío:* ${customerAddress}\n\n`;
+            whatsappMessage += `📍 *Dirección de Envío:* ${customerAddress}\n`; // Se agregó salto de línea aquí
+            whatsappMessage += `💳 *Método de Pago:* ${finalPaymentMethod}\n\n`; // Se agregó aquí el método de pago
 
             let orderTotal = 0;
-            const shippingCost = 2500; // Costo de envío para el mensaje de WhatsApp
+            const shippingCost = 2500;
 
             cart.forEach(item => {
                 const itemTotal = item.price * item.quantity;
@@ -181,7 +207,6 @@ document.addEventListener('DOMContentLoaded', () => {
             whatsappMessage += `*Total Final: $${(orderTotal + shippingCost).toLocaleString('es-CL')}*\n\n`;
             whatsappMessage += "¡Muchas gracias!";
 
-            // Codificar el mensaje para URL
             const encodedMessage = encodeURIComponent(whatsappMessage);
 
             window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
@@ -193,7 +218,7 @@ document.addEventListener('DOMContentLoaded', () => {
     let currentImageIndex = 0;
 
     function showNextImage() {
-        if (!carouselImages.length) return; // Salir si no hay imágenes (no estamos en index.html)
+        if (!carouselImages.length) return;
 
         carouselImages[currentImageIndex].classList.remove('active');
         currentImageIndex = (currentImageIndex + 1) % carouselImages.length;
@@ -201,11 +226,12 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     if (carouselImages.length > 0) {
-        setInterval(showNextImage, 4000); // Cambia de imagen cada 4 segundos
+        setInterval(showNextImage, 4000);
     }
 
-    // Inicializar: actualizar el contador del carrito, renderizar el carrito y cargar la dirección
+    // Inicializar: actualizar el contador del carrito, renderizar el carrito, cargar la dirección y el método de pago
     updateCartCount();
-    renderCart(); // Se ejecutará solo si document.getElementById('cart-items') existe
-    loadAddress(); // Cargar la dirección al iniciar la página (si el input existe)
+    renderCart();
+    loadAddress();
+    loadPaymentMethod(); // Cargar el método de pago al iniciar la página del carrito
 });
