@@ -3,13 +3,13 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Menú - Nombre de tu Restaurante</title>
+    <title>Menú - Sushi Like</title>
     <link rel="stylesheet" href="css/style.css">
 </head>
 <body>
     <header>
         <nav>
-            <div class="logo">Tu Logo</div>
+            <div class="logo">Sushi LIKE</div>
             <ul>
                 <li><a href="index.html">Inicio</a></li>
                 <li><a href="menu.html">Menú</a></li>
@@ -21,36 +21,85 @@
 
     <main class="menu-page">
         <h1>Nuestro Menú</h1>
-        <div class="menu-categories">
-            <a href="menu-rolls.html" class="category-card">
-                <img src="images/sushi-roll-1.jpg" alt="Rolls de Sushi">
-                <h3>Rolls</h3>
+
+        <section class="menu-categories">
+            <a href="#futomaki" class="category-card">
+                <img src="images/category-futomaki.jpg" alt="Futomaki">
+                <h3>Futomaki Rolls</h3>
             </a>
-            <a href="menu-tablas.html" class="category-card">
-                <img src="images/promo-1.jpg" alt="Tablas Variadas">
+            <a href="#hosomaki" class="category-card">
+                <img src="images/category-hosomaki.jpg" alt="Hosomaki">
+                <h3>Hosomaki Rolls</h3>
+            </a>
+            <a href="#sake-rolls" class="category-card">
+                <img src="images/category-sakerolls.jpg" alt="Sake Rolls">
+                <h3>Sake Rolls</h3>
+            </a>
+            <a href="#uramaki" class="category-card">
+                <img src="images/category-uramaki.jpg" alt="Uramaki">
+                <h3>Uramaki Rolls</h3>
+            </a>
+            <a href="#avocado-rolls" class="category-card">
+                <img src="images/category-avocadorolls.jpg" alt="Avocado Rolls">
+                <h3>Avocado Rolls</h3>
+            </a>
+            <a href="#cream-rolls" class="category-card">
+                <img src="images/category-creamrolls.jpg" alt="Cream Rolls">
+                <h3>Cream Rolls</h3>
+            </a>
+            <a href="#tempuras-panko" class="category-card">
+                <img src="images/category-panko.jpg" alt="Tempuras/Panko">
+                <h3>Tempuras/Panko</h3>
+            </a>
+            <a href="#special-rolls" class="category-card">
+                <img src="images/category-specialrolls.jpg" alt="Special Rolls">
+                <h3>Special Rolls</h3>
+            </a>
+            <a href="#rolls-sin-arroz" class="category-card">
+                <img src="images/category-sinarroz.jpg" alt="Rolls Sin Arroz">
+                <h3>Rolls Sin Arroz</h3>
+            </a>
+            <a href="#tablas" class="category-card">
+                <img src="images/category-tablas.jpg" alt="Tablas">
                 <h3>Tablas</h3>
             </a>
-            <a href="menu-promociones.html" class="category-card">
-                <img src="images/hero-banner.jpg" alt="Promociones">
-                <h3>Promociones</h3>
+            <a href="#super-promos" class="category-card">
+                <img src="images/category-superpromos.jpg" alt="Super Promos">
+                <h3>Super Promos</h3>
             </a>
-            <a href="menu-snacks.html" class="category-card">
-                <img src="images/sushi-roll-1.jpg" alt="Snacks">
-                <h3>Snacks</h3>
+            <a href="#gohan" class="category-card">
+                <img src="images/category-gohan.jpg" alt="Gohan">
+                <h3>Gohan</h3>
             </a>
-            <a href="menu-extras.html" class="category-card">
-                <img src="images/promo-1.jpg" alt="Extras">
-                <h3>Extras</h3>
+            <a href="#sashimi" class="category-card">
+                <img src="images/category-sashimi.jpg" alt="Sashimi">
+                <h3>Sashimi</h3>
             </a>
-            <a href="menu-bebidas.html" class="category-card">
-                <img src="images/hero-banner.jpg" alt="Bebidas">
+            <a href="#snacks-tempurizados" class="category-card">
+                <img src="images/category-snacks.jpg" alt="Snacks Tempurizados">
+                <h3>Snacks Tempurizados</h3>
+            </a>
+            <a href="#nigiris" class="category-card">
+                <img src="images/category-nigiris.jpg" alt="Nigiris">
+                <h3>Nigiris</h3>
+            </a>
+            <a href="#bebidas" class="category-card">
+                <img src="images/category-bebidas.jpg" alt="Bebidas">
                 <h3>Bebidas</h3>
             </a>
-        </div>
+            <a href="#extras" class="category-card">
+                <img src="images/category-extras.jpg" alt="Extras">
+                <h3>Extras</h3>
+            </a>
+        </section>
+
+        <section id="menu-product-list" class="menu-category-page">
+            </section>
+
     </main>
 
     <footer>
-        <p>© 2025 Nombre de tu Restaurante. Todos los derechos reservados.</p>
+        <p>© 2025 Sushi Like. Todos los derechos reservados.</p>
     </footer>
 
     <script src="js/main.js"></script>
