@@ -224,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const phoneNumber = "56912345678"; // ¡IMPORTANTE: Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)!
+            const phoneNumber = "56929337063"; // ¡IMPORTANTE: Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)!
             const finalPaymentMethod = selectedPaymentMethod;
             const finalShippingCost = calculateShippingCost(); // Obtener el costo de envío final
 
