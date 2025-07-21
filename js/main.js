@@ -16,10 +16,16 @@ document.addEventListener('DOMContentLoaded', () => {
     const paymentMethodSelect = document.getElementById('payment-method');
 
     // --- Variables de Estado ---
-    let cart = []; // El carrito siempre inicia vacío, no se carga desde localStorage
-    let selectedPaymentMethod = ''; // El método de pago siempre inicia sin seleccionar
-    let selectedCommune = ''; // La comuna seleccionada
-    let streetAddress = ''; // La dirección de la calle
+
+    // **CAMBIO CLAVE AQUI:** Cargar el carrito desde localStorage o inicializarlo vacío
+    let cart = JSON.parse(localStorage.getItem('cart')) || [];
+    // **CAMBIO CLAVE AQUI:** Cargar el método de pago desde localStorage o inicializarlo vacío
+    let selectedPaymentMethod = localStorage.getItem('selectedPaymentMethod') || '';
+    // **CAMBIO CLAVE AQUI:** Cargar la comuna seleccionada desde localStorage
+    let selectedCommune = localStorage.getItem('selectedCommune') || '';
+    // **CAMBIO CLAVE AQUI:** Cargar la dirección de la calle desde localStorage
+    let streetAddress = localStorage.getItem('streetAddress') || '';
+
 
     // --- Costos de Envío por Comuna ---
     // ¡IMPORTANTE! Personaliza estos valores y comunas según tu negocio.
@@ -31,10 +37,29 @@ document.addEventListener('DOMContentLoaded', () => {
         '': 0 // Si no hay comuna seleccionada, el costo es 0 (o puedes poner un mensaje de error)
     };
 
+    // --- Funciones de guardado en localStorage ---
+    function saveCartToLocalStorage() {
+        localStorage.setItem('cart', JSON.stringify(cart));
+    }
+
+    function savePaymentMethodToLocalStorage() {
+        localStorage.setItem('selectedPaymentMethod', selectedPaymentMethod);
+    }
+
+    function saveCommuneToLocalStorage() {
+        localStorage.setItem('selectedCommune', selectedCommune);
+    }
+
+    function saveStreetAddressToLocalStorage() {
+        localStorage.setItem('streetAddress', streetAddress);
+    }
+
+
     // --- Funciones del Carrito y UI ---
 
     function saveCart() {
-        // No guarda en localStorage, solo actualiza la UI
+        // Ahora sí, guarda en localStorage
+        saveCartToLocalStorage();
         updateCartCount();
         renderCart();
     }
@@ -121,25 +146,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     // --- Event Listeners ---
 
-    // Evento para obtener la dirección de la calle
-    if (deliveryStreetAddressInput) {
-        deliveryStreetAddressInput.addEventListener('input', (e) => {
-            streetAddress = e.target.value;
-        });
-    }
-
-    // Evento para obtener la comuna seleccionada y actualizar el envío
+    // Inicializar campos de dirección y pago con valores guardados
     if (deliveryCommuneSelect) {
+        deliveryCommuneSelect.value = selectedCommune;
         deliveryCommuneSelect.addEventListener('change', (e) => {
             selectedCommune = e.target.value;
+            saveCommuneToLocalStorage(); // Guardar la comuna
             renderCart(); // Vuelve a renderizar el carrito para actualizar el costo de envío
         });
     }
 
-    // Evento para obtener el método de pago al seleccionar
+    if (deliveryStreetAddressInput) {
+        deliveryStreetAddressInput.value = streetAddress; // Inicializar
+        deliveryStreetAddressInput.addEventListener('input', (e) => {
+            streetAddress = e.target.value;
+            saveStreetAddressToLocalStorage(); // Guardar la dirección
+        });
+    }
+
     if (paymentMethodSelect) {
+        paymentMethodSelect.value = selectedPaymentMethod; // Inicializar
         paymentMethodSelect.addEventListener('change', (e) => {
-            selectedPaymentMethod = e.target.value; // Actualiza la variable global
+            selectedPaymentMethod = e.target.value;
+            savePaymentMethodToLocalStorage(); // Guardar el método de pago
         });
     }
 
@@ -195,7 +224,7 @@ document.addEventListener('DOMContentLoaded', () => {
                 return;
             }
 
-            const phoneNumber = "56937248200"; // ¡IMPORTANTE: Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)!
+            const phoneNumber = "56912345678"; // ¡IMPORTANTE: Reemplaza con tu número de teléfono de WhatsApp (sin + ni espacios)!
             const finalPaymentMethod = selectedPaymentMethod;
             const finalShippingCost = calculateShippingCost(); // Obtener el costo de envío final
 
@@ -225,15 +254,22 @@ document.addEventListener('DOMContentLoaded', () => {
 
             window.open(`https://wa.me/${phoneNumber}?text=${encodedMessage}`, '_blank');
 
-            // Opcional: Limpiar el carrito y los campos después de enviar el pedido
-            // cart = [];
-            // selectedCommune = '';
-            // streetAddress = '';
-            // selectedPaymentMethod = '';
-            // if (deliveryCommuneSelect) deliveryCommuneSelect.value = '';
-            // if (deliveryStreetAddressInput) deliveryStreetAddressInput.value = '';
-            // if (paymentMethodSelect) paymentMethodSelect.value = '';
-            // saveCart(); // Actualiza la UI
+            // **CAMBIO AQUI:** Opcional: Limpiar el carrito y los campos después de enviar el pedido
+            // Esto asegura que el carrito y los datos se reinicien solo DESPUÉS de un pedido exitoso.
+            cart = [];
+            selectedCommune = '';
+            streetAddress = '';
+            selectedPaymentMethod = '';
+            // Limpiar localStorage después de un pedido
+            localStorage.removeItem('cart');
+            localStorage.removeItem('selectedCommune');
+            localStorage.removeItem('streetAddress');
+            localStorage.removeItem('selectedPaymentMethod');
+
+            if (deliveryCommuneSelect) deliveryCommuneSelect.value = '';
+            if (deliveryStreetAddressInput) deliveryStreetAddressInput.value = '';
+            if (paymentMethodSelect) paymentMethodSelect.value = '';
+            saveCart(); // Actualiza la UI y el localStorage vacío
         });
     }
 
@@ -254,6 +290,7 @@ document.addEventListener('DOMContentLoaded', () => {
     }
 
     // Inicializar: actualizar el contador del carrito y renderizar el carrito
+    // También se inicializan los campos de dirección/pago con los valores guardados
     updateCartCount();
-    renderCart(); // Llamada inicial para mostrar el costo de envío $0 o predeterminado
+    renderCart();
 });
