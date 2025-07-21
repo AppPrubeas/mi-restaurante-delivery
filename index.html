@@ -36,8 +36,17 @@
         <section class="delivery-address">
             <h2>¿Dónde te lo enviamos?</h2>
             <div class="address-input-group">
-                <label for="delivery-address-input">Tu Dirección:</label>
-                <input type="text" id="delivery-address-input" placeholder="Ej: Calle Principal 123, Depto 402, Quilpué" required>
+                <label for="delivery-commune-select">Selecciona tu Comuna:</label>
+                <select id="delivery-commune-select" required>
+                    <option value="">-- Selecciona una Comuna --</option>
+                    <option value="Quilpué">Quilpué</option>
+                    <option value="Villa Alemana">Villa Alemana</option>
+                    <option value="Limache">Limache</option>
+                    <option value="Viña del Mar">Viña del Mar</option>
+                    </select>
+
+                <label for="delivery-street-address">Tu Dirección (Calle, Número, Depto/Casa):</label>
+                <input type="text" id="delivery-street-address" placeholder="Ej: Calle Principal 123, Depto 402" required>
                 <small>Ingresa tu dirección completa para un delivery más rápido.</small>
             </div>
         </section>
